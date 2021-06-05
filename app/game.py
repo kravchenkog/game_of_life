@@ -2,7 +2,8 @@ import pandas as pd
 import numpy as np
 from typing import List
 from collections import Counter
-import random
+
+from app.console import Console
 
 
 class GameOfLife:
@@ -12,11 +13,12 @@ class GameOfLife:
         self.initial_df = self.get_initial_df(self.rows, self.columns)
         self.previous_generation_df = pd.DataFrame()
         self.next_generation_df = pd.DataFrame()
+        self.this_generation_df = pd.DataFrame()
 
     @staticmethod
     def get_initial_df(rows, columns) -> pd.DataFrame:
         return pd.DataFrame(np.zeros((rows, columns)))
-        #return pd.DataFrame(np.random.randint(0, 2, size=(rows, columns)))
+        # return pd.DataFrame(np.random.randint(0, 2, size=(rows, columns)))
 
     @staticmethod
     def get_all_cells_data(df: pd.DataFrame) -> List:
@@ -67,22 +69,24 @@ class GameOfLife:
 
 
 if __name__ == "__main__":
-    size = [int(x) for x in input('Game frame size (rows , columns). Format example: 5, 6 \n').split(",")]
-    game = GameOfLife(rows=size[0], columns=size[1])
-    number_of_life_cells = int(input('Enter number of random life cells INTEGER  \n'))
-    all_cells = game.get_all_cells_data(game.initial_df)
-    for cell_position in random.sample(all_cells, number_of_life_cells):
-        game.initial_df.iloc[cell_position['x_position']][cell_position['y_position']] = 1
-    print(game.initial_df)
-    game.next_generation_df = game.initial_df
+    console = Console()
+    game = GameOfLife(rows=console.init_frame_size[0], columns=console.init_frame_size[1])
+    for cell_position in console.init_life_cells:
+        game.initial_df.iloc[cell_position[0]][cell_position[1]] = 1
+    print(f"INITIAL FRAME \n5,6{game.initial_df}")
+    game.this_generation_df = game.initial_df.copy()
+    game.next_generation_df = game.initial_df.copy()
     generation = 0
     while not game.previous_generation_df.equals(game.next_generation_df):
+        all_cells = game.get_all_cells_data(game.this_generation_df)
         for cell in all_cells:
-            neighbors_cells = game.get_cell_neighbors_positions_and_values(cell, game.initial_df)
+            neighbors_cells = game.get_cell_neighbors_positions_and_values(cell, game.this_generation_df)
             cell_new_generation = game.get_next_generation_for_cell(cell_examination=cell, neighbors=neighbors_cells)
             game.next_generation_df.iloc[cell_new_generation['x_position']][cell_new_generation['y_position']] = \
                 cell_new_generation['value']
         print(f"GENERATION N {generation} \n {game.next_generation_df} \n")
-        game.previous_generation_df = game.next_generation_df
+        game.previous_generation_df = game.this_generation_df.copy()
+        game.this_generation_df = game.next_generation_df.copy()
+        generation += 1
         input()
     print("GAME OVER")
