@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 from typing import List
 from collections import Counter
+from tabulate import tabulate
 
 from app.console import Console
 
@@ -69,22 +70,38 @@ class GameOfLife:
 
 
 if __name__ == "__main__":
+    # set initial data
     console = Console()
+
+    # create empty df
     game = GameOfLife(rows=console.init_frame_size[0], columns=console.init_frame_size[1])
+
+    # set life cells
     for cell_position in console.init_life_cells:
         game.initial_df.iloc[cell_position[0]][cell_position[1]] = 1
-    print(f"INITIAL FRAME \n5,6{game.initial_df}")
+    print(f"INITIAL FRAME \n5,6{tabulate(game.initial_df, tablefmt='pipe', headers='keys')}")
+
+    # set this and next generation
     game.this_generation_df = game.initial_df.copy()
     game.next_generation_df = game.initial_df.copy()
     generation = 0
+
+    # time starting
     while not game.previous_generation_df.equals(game.next_generation_df):
         all_cells = game.get_all_cells_data(game.this_generation_df)
         for cell in all_cells:
+            # get neighbors of selected cell
             neighbors_cells = game.get_cell_neighbors_positions_and_values(cell, game.this_generation_df)
+
+            # get cell data for next generation
             cell_new_generation = game.get_next_generation_for_cell(cell_examination=cell, neighbors=neighbors_cells)
+
+            # set cell to next generation frame
             game.next_generation_df.iloc[cell_new_generation['x_position']][cell_new_generation['y_position']] = \
                 cell_new_generation['value']
-        print(f"GENERATION N {generation} \n {game.next_generation_df} \n")
+        print(f"GENERATION N {generation} \n {tabulate(game.next_generation_df, tablefmt='pipe', headers='keys')} \n")
+
+        # set previous and this generation frame for next period of tine
         game.previous_generation_df = game.this_generation_df.copy()
         game.this_generation_df = game.next_generation_df.copy()
         generation += 1
