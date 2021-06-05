@@ -6,3 +6,5 @@
 > set Game frame size (rows , columns). Format example: 5, 6 
 
 > set number of life cells
+
+> set life cells positions
