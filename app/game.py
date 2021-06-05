@@ -73,10 +73,10 @@ if __name__ == "__main__":
     # set initial data
     console = Console()
 
-    # create empty df
+    # create a lifeless world
     game = GameOfLife(rows=console.init_frame_size[0], columns=console.init_frame_size[1])
 
-    # set life cells
+    # add living organisms
     for cell_position in console.init_life_cells:
         game.initial_df.iloc[cell_position[0]][cell_position[1]] = 1
     print(f"INITIAL FRAME \n5,6{tabulate(game.initial_df, tablefmt='pipe', headers='keys')}")
@@ -93,15 +93,15 @@ if __name__ == "__main__":
             # get neighbors of selected cell
             neighbors_cells = game.get_cell_neighbors_positions_and_values(cell, game.this_generation_df)
 
-            # get cell data for next generation
+            # find out what will happen to this place in the next generation
             cell_new_generation = game.get_next_generation_for_cell(cell_examination=cell, neighbors=neighbors_cells)
 
-            # set cell to next generation frame
+            # apply a new place to future generations
             game.next_generation_df.iloc[cell_new_generation['x_position']][cell_new_generation['y_position']] = \
                 cell_new_generation['value']
         print(f"GENERATION N {generation} \n {tabulate(game.next_generation_df, tablefmt='pipe', headers='keys')} \n")
 
-        # set previous and this generation frame for next period of tine
+        # set previous and this generation frame for next period of time
         game.previous_generation_df = game.this_generation_df.copy()
         game.this_generation_df = game.next_generation_df.copy()
         generation += 1
