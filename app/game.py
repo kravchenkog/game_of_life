@@ -29,9 +29,9 @@ class GameOfLife:
                 cells.append({"x_position": c, "y_position": label, "value": content[c]})
         return cells
 
-    def get_cell_neighbors_positions(self, cell):
-        x = cell['x_position']
-        y = cell['y_position']
+    def get_cell_neighbors_positions(self, cell_positions):
+        x = cell_positions['x_position']
+        y = cell_positions['y_position']
         dimension_x, dimension_y = self.initial_df.shape
         neighbors = [(x2, y2) for x2 in range(x - 1, x + 2)
                      for y2 in range(y - 1, y + 2)
@@ -106,4 +106,10 @@ if __name__ == "__main__":
         game.this_generation_df = game.next_generation_df.copy()
         generation += 1
         input()
+    if set(game.next_generation_df.values.ravel()) == {1}:
+        print("The whole world came to life !")
+    elif set(game.next_generation_df.values.ravel()) == {0}:
+        print("The whole world has died :(")
+    else:
+        print("Nothing else changes. The world will remain as it is")
     print("GAME OVER")
