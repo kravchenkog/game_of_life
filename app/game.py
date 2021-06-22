@@ -4,7 +4,7 @@ from typing import List
 from collections import Counter
 from tabulate import tabulate
 
-from app.console import Console
+from console import Console
 
 
 class GameOfLife:
