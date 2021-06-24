@@ -72,7 +72,6 @@ class GameOfLife:
 if __name__ == "__main__":
     # set initial data
     console = Console()
-
     # create a lifeless world
     game = GameOfLife(rows=console.init_frame_size[0], columns=console.init_frame_size[1])
 
@@ -80,7 +79,6 @@ if __name__ == "__main__":
     for cell_position in console.init_life_cells:
         game.initial_df.iloc[cell_position[0]][cell_position[1]] = 1
     print(f"INITIAL FRAME \n5,6{tabulate(game.initial_df, tablefmt='pipe', headers='keys')}")
-
     # set this and next generation
     game.this_generation_df = game.initial_df.copy()
     game.next_generation_df = game.initial_df.copy()

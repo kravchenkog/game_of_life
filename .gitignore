@@ -136,3 +136,6 @@ dmypy.json
 /tests/test_data/keys/
 .DS_Store
 tests/test_data/.DS_Store
+
+#sublime
+.sublime-workspace
